@@ -33,9 +33,11 @@ export const Navbar = () => {
               <Wallet className="w-4 h-4 text-casino-accent" />
               <span>Deposit</span>
             </Button>
-            <Button className="bg-casino-primary hover:bg-casino-primary/80">
-              Sign In
-            </Button>
+            <Link to="/login">
+              <Button className="bg-casino-primary hover:bg-casino-primary/80">
+                Sign In
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
