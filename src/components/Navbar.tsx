@@ -29,10 +29,12 @@ export const Navbar = () => {
           </div>
 
           <div className="flex items-center space-x-4">
-            <Button variant="outline" className="hidden md:flex items-center space-x-2 bg-casino-muted/10 border-casino-accent/20 hover:bg-casino-muted/20">
-              <Wallet className="w-4 h-4 text-casino-accent" />
-              <span>Deposit</span>
-            </Button>
+            <Link to="/dashboard">
+              <Button variant="outline" className="hidden md:flex items-center space-x-2 bg-casino-muted/10 border-casino-accent/20 hover:bg-casino-muted/20">
+                <Wallet className="w-4 h-4 text-casino-accent" />
+                <span>Deposit</span>
+              </Button>
+            </Link>
             <Link to="/login">
               <Button className="bg-casino-primary hover:bg-casino-primary/80">
                 Sign In

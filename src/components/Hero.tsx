@@ -1,8 +1,11 @@
 
 import { Button } from "@/components/ui/button";
 import { Gamepad2, Trophy } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 
 export const Hero = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-casino-background">
       {/* Background Effect */}
@@ -29,20 +32,24 @@ export const Hero = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button 
-              size="lg" 
-              className="w-full sm:w-auto bg-casino-primary hover:bg-casino-primary/80 text-white px-8"
-            >
-              Join Now
-            </Button>
-            <Button 
-              size="lg" 
-              variant="outline" 
-              className="w-full sm:w-auto bg-casino-muted/10 border-casino-accent/20 hover:bg-casino-muted/20"
-            >
-              <Gamepad2 className="mr-2 h-5 w-5" />
-              Play Demo
-            </Button>
+            <Link to="/signup">
+              <Button 
+                size="lg" 
+                className="w-full sm:w-auto bg-casino-primary hover:bg-casino-primary/80 text-white px-8"
+              >
+                Join Now
+              </Button>
+            </Link>
+            <Link to="/demo">
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="w-full sm:w-auto bg-casino-muted/10 border-casino-accent/20 hover:bg-casino-muted/20"
+              >
+                <Gamepad2 className="mr-2 h-5 w-5" />
+                Play Demo
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
