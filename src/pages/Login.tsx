@@ -4,8 +4,27 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Trophy } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { useState } from "react";
 
 const Login = () => {
+  const { signIn } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await signIn(email, password);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-casino-background text-white flex items-center justify-center px-4">
       <div className="w-full max-w-md space-y-8 bg-casino-secondary/30 p-8 rounded-xl backdrop-blur-md border border-casino-muted/20">
@@ -18,15 +37,18 @@ const Login = () => {
           <p className="text-gray-400 mt-2">Please sign in to continue</p>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={(e) => e.preventDefault()}>
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email address</Label>
               <Input
                 id="email"
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
                 className="bg-casino-muted/10 border-casino-muted/20 text-white placeholder:text-gray-500"
+                required
               />
             </div>
 
@@ -35,14 +57,21 @@ const Login = () => {
               <Input
                 id="password"
                 type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
                 className="bg-casino-muted/10 border-casino-muted/20 text-white placeholder:text-gray-500"
+                required
               />
             </div>
           </div>
 
-          <Button className="w-full bg-casino-primary hover:bg-casino-primary/80">
-            Sign in
+          <Button 
+            type="submit"
+            className="w-full bg-casino-primary hover:bg-casino-primary/80"
+            disabled={loading}
+          >
+            {loading ? "Signing in..." : "Sign in"}
           </Button>
 
           <p className="text-center text-gray-400">
