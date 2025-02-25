@@ -28,11 +28,18 @@ export const Hero = () => {
             Join thousands of players in the most immersive online casino experience. Live games, slots, and more await you.
           </p>
           
-          <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-            <Button size="lg" className="bg-casino-primary hover:bg-casino-primary/80 text-white px-8">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Button 
+              size="lg" 
+              className="w-full sm:w-auto bg-casino-primary hover:bg-casino-primary/80 text-white px-8"
+            >
               Join Now
             </Button>
-            <Button size="lg" variant="outline" className="bg-casino-muted/10 border-casino-accent/20 hover:bg-casino-muted/20">
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="w-full sm:w-auto bg-casino-muted/10 border-casino-accent/20 hover:bg-casino-muted/20"
+            >
               <Gamepad2 className="mr-2 h-5 w-5" />
               Play Demo
             </Button>
