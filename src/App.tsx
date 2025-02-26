@@ -8,20 +8,23 @@ import Dashboard from '@/pages/Dashboard';
 import NotFound from '@/pages/NotFound';
 import DemoGame from '@/pages/DemoGame';
 import BlackjackGame from '@/pages/BlackjackGame';
+import { AuthProvider } from '@/contexts/AuthContext';
 
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/demo-game" element={<DemoGame />} />
-        <Route path="/blackjack" element={<BlackjackGame />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-      <Toaster />
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/demo-game" element={<DemoGame />} />
+          <Route path="/blackjack" element={<BlackjackGame />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+        <Toaster />
+      </AuthProvider>
     </Router>
   );
 }
