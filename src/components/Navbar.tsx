@@ -1,9 +1,46 @@
 
 import { Button } from "@/components/ui/button";
-import { Trophy, Gamepad2, Fish, Wallet } from "lucide-react";
+import { Trophy, Gamepad2, Fish, Wallet, ShieldCheck, Slot } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Navbar = () => {
+  const { user, signOut } = useAuth();
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      checkAdminRole();
+    }
+  }, [user]);
+
+  const checkAdminRole = async () => {
+    if (!user) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .eq('role', 'admin')
+        .single();
+
+      if (error) {
+        console.error("Error checking admin role:", error);
+        setIsAdmin(false);
+      } else if (data) {
+        setIsAdmin(true);
+      } else {
+        setIsAdmin(false);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setIsAdmin(false);
+    }
+  };
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-casino-secondary/95 backdrop-blur-md border-b border-casino-muted/20">
       <div className="container mx-auto px-4">
@@ -19,27 +56,50 @@ export const Navbar = () => {
               <span>Live Games</span>
             </NavLink>
             <NavLink to="/slots">
-              <Trophy className="w-5 h-5" />
+              <Slot className="w-5 h-5" />
               <span>Slots</span>
             </NavLink>
-            <NavLink to="/fishing">
+            <NavLink to="/blackjack">
+              <Trophy className="w-5 h-5" />
+              <span>Blackjack</span>
+            </NavLink>
+            <NavLink to="/demo-game">
               <Fish className="w-5 h-5" />
-              <span>Fishing</span>
+              <span>Demo Game</span>
             </NavLink>
           </div>
 
           <div className="flex items-center space-x-4">
-            <Link to="/dashboard">
-              <Button variant="outline" className="hidden md:flex items-center space-x-2 bg-casino-muted/10 border-casino-accent/20 hover:bg-casino-muted/20">
-                <Wallet className="w-4 h-4 text-casino-accent" />
-                <span>Deposit</span>
-              </Button>
-            </Link>
-            <Link to="/login">
-              <Button className="bg-casino-primary hover:bg-casino-primary/80">
-                Sign In
-              </Button>
-            </Link>
+            {user ? (
+              <>
+                {isAdmin && (
+                  <Link to="/admin">
+                    <Button variant="outline" className="hidden md:flex items-center space-x-2 bg-casino-muted/10 border-casino-accent/20 hover:bg-casino-muted/20">
+                      <ShieldCheck className="w-4 h-4 text-casino-accent" />
+                      <span>Admin</span>
+                    </Button>
+                  </Link>
+                )}
+                <Link to="/dashboard">
+                  <Button variant="outline" className="hidden md:flex items-center space-x-2 bg-casino-muted/10 border-casino-accent/20 hover:bg-casino-muted/20">
+                    <Wallet className="w-4 h-4 text-casino-accent" />
+                    <span>Dashboard</span>
+                  </Button>
+                </Link>
+                <Button 
+                  onClick={() => signOut()}
+                  className="bg-casino-primary hover:bg-casino-primary/80"
+                >
+                  Sign Out
+                </Button>
+              </>
+            ) : (
+              <Link to="/login">
+                <Button className="bg-casino-primary hover:bg-casino-primary/80">
+                  Sign In
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
       </div>

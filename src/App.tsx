@@ -8,6 +8,9 @@ import Dashboard from '@/pages/Dashboard';
 import NotFound from '@/pages/NotFound';
 import DemoGame from '@/pages/DemoGame';
 import BlackjackGame from '@/pages/BlackjackGame';
+import SlotsGame from '@/pages/SlotsGame';
+import LiveGames from '@/pages/LiveGames';
+import AdminPanel from '@/pages/AdminPanel';
 import { AuthProvider } from '@/contexts/AuthContext';
 
 function App() {
@@ -21,6 +24,9 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/demo-game" element={<DemoGame />} />
           <Route path="/blackjack" element={<BlackjackGame />} />
+          <Route path="/slots" element={<SlotsGame />} />
+          <Route path="/live-games" element={<LiveGames />} />
+          <Route path="/admin" element={<AdminPanel />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <Toaster />
