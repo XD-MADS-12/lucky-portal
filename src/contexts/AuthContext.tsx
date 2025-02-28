@@ -11,6 +11,8 @@ type AuthContextType = {
   signUp: (email: string, password: string, username: string) => Promise<void>;
   signOut: () => Promise<void>;
   loading: boolean;
+  setAdminRole: (userId: string) => Promise<void>;
+  isAdmin: boolean;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -19,6 +21,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<any | null>(null);
   const [profile, setProfile] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,6 +30,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(session?.user ?? null);
       if (session?.user) {
         getProfile(session.user.id);
+        checkAdminStatus(session.user.id);
       }
       setLoading(false);
     });
@@ -38,8 +42,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(session?.user ?? null);
       if (session?.user) {
         await getProfile(session.user.id);
+        await checkAdminStatus(session.user.id);
       } else {
         setProfile(null);
+        setIsAdmin(false);
       }
       setLoading(false);
     });
@@ -63,6 +69,52 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     setProfile(data);
   }
+
+  async function checkAdminStatus(userId: string) {
+    try {
+      const { data, error } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userId)
+        .eq('role', 'admin')
+        .single();
+      
+      if (error) {
+        console.error("Error checking admin status:", error);
+        setIsAdmin(false);
+        return;
+      }
+      
+      setIsAdmin(!!data);
+    } catch (error) {
+      console.error("Error checking admin role:", error);
+      setIsAdmin(false);
+    }
+  }
+
+  const setAdminRole = async (userId: string) => {
+    try {
+      const { error } = await supabase
+        .from('user_roles')
+        .insert([{ user_id: userId, role: 'admin' }]);
+      
+      if (error) {
+        if (error.code === '23505') { // Unique violation error code
+          toast.info("This user is already an admin");
+          return;
+        }
+        throw error;
+      }
+      
+      toast.success("Admin role assigned successfully");
+      if (user && user.id === userId) {
+        setIsAdmin(true);
+      }
+    } catch (error: any) {
+      toast.error(`Failed to set admin role: ${error.message}`);
+      throw error;
+    }
+  };
 
   const signIn = async (email: string, password: string) => {
     try {
@@ -115,7 +167,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, profile, signIn, signUp, signOut, loading }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      profile, 
+      signIn, 
+      signUp, 
+      signOut, 
+      loading,
+      setAdminRole,
+      isAdmin
+    }}>
       {children}
     </AuthContext.Provider>
   );

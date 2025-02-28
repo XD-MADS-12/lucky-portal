@@ -1,45 +1,13 @@
 
+
 import { Button } from "@/components/ui/button";
 import { Trophy, Gamepad2, Fish, Wallet, ShieldCheck, CircleDollarSign } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
 
 export const Navbar = () => {
-  const { user, signOut } = useAuth();
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  useEffect(() => {
-    if (user) {
-      checkAdminRole();
-    }
-  }, [user]);
-
-  const checkAdminRole = async () => {
-    if (!user) return;
-
-    try {
-      const { data, error } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', user.id)
-        .eq('role', 'admin')
-        .single();
-
-      if (error) {
-        console.error("Error checking admin role:", error);
-        setIsAdmin(false);
-      } else if (data) {
-        setIsAdmin(true);
-      } else {
-        setIsAdmin(false);
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      setIsAdmin(false);
-    }
-  };
+  const { user, signOut, isAdmin } = useAuth();
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-casino-secondary/95 backdrop-blur-md border-b border-casino-muted/20">
