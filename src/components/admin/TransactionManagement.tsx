@@ -113,18 +113,28 @@ const TransactionManagement = () => {
           ? userData.balance + transaction.amount
           : userData.balance - transaction.amount;
         
-        // Update balance
-        const { error: updateError } = await supabase
-          .from('profiles')
-          .update({ 
-            balance: newBalance,
-            ...(transaction.type === 'deposit' 
-              ? { total_deposit: supabase.rpc('increment', { x: transaction.amount }) } 
-              : { total_withdrawal: supabase.rpc('increment', { x: transaction.amount }) })
-          })
-          .eq('id', transaction.user_id);
-        
-        if (updateError) throw updateError;
+        // Update balance - Fixed the type issues
+        if (transaction.type === 'deposit') {
+          const { error: updateError } = await supabase
+            .from('profiles')
+            .update({ 
+              balance: newBalance,
+              total_deposit: userData.total_deposit + transaction.amount
+            })
+            .eq('id', transaction.user_id);
+          
+          if (updateError) throw updateError;
+        } else {
+          const { error: updateError } = await supabase
+            .from('profiles')
+            .update({ 
+              balance: newBalance,
+              total_withdrawal: userData.total_withdrawal + transaction.amount
+            })
+            .eq('id', transaction.user_id);
+          
+          if (updateError) throw updateError;
+        }
       }
 
       // Update local state

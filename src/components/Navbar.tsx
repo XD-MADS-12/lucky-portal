@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Trophy, Gamepad2, Fish, Wallet, ShieldCheck, Slot } from "lucide-react";
+import { Trophy, Gamepad2, Fish, Wallet, ShieldCheck, CircleDollarSign } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useState, useEffect } from "react";
@@ -56,7 +56,7 @@ export const Navbar = () => {
               <span>Live Games</span>
             </NavLink>
             <NavLink to="/slots">
-              <Slot className="w-5 h-5" />
+              <CircleDollarSign className="w-5 h-5" />
               <span>Slots</span>
             </NavLink>
             <NavLink to="/blackjack">
