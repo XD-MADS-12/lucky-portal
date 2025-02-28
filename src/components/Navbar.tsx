@@ -1,13 +1,24 @@
 
-
 import { Button } from "@/components/ui/button";
 import { Trophy, Gamepad2, Fish, Wallet, ShieldCheck, CircleDollarSign } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export const Navbar = () => {
   const { user, signOut, isAdmin } = useAuth();
+  const navigate = useNavigate();
+
+  const handleAdminClick = (e: React.MouseEvent) => {
+    if (!isAdmin) {
+      e.preventDefault();
+      toast.error("Admin access required", {
+        description: "You need admin privileges to access the admin panel."
+      });
+      navigate('/login?from=admin');
+    }
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-casino-secondary/95 backdrop-blur-md border-b border-casino-muted/20">
@@ -41,7 +52,7 @@ export const Navbar = () => {
             {user ? (
               <>
                 {isAdmin && (
-                  <Link to="/admin">
+                  <Link to="/admin" onClick={handleAdminClick}>
                     <Button variant="outline" className="hidden md:flex items-center space-x-2 bg-casino-muted/10 border-casino-accent/20 hover:bg-casino-muted/20">
                       <ShieldCheck className="w-4 h-4 text-casino-accent" />
                       <span>Admin</span>

@@ -1,18 +1,45 @@
 
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 import { Checkbox } from "@/components/ui/checkbox";
+import { toast } from "sonner";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [showAdmin, setShowAdmin] = useState(false);
-  const { signIn, user, setAdminRole } = useAuth();
+  const { signIn, user, setAdminRole, isAdmin } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Check if redirected from a protected route
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const fromAdmin = params.get('from') === 'admin';
+    
+    if (fromAdmin) {
+      toast.error("Admin access required", {
+        description: "You need admin privileges to access the admin panel.",
+        duration: 5000,
+      });
+    }
+  }, [location]);
+
+  useEffect(() => {
+    // If user is already logged in and is admin, redirect to admin panel
+    if (user && isAdmin && location.search.includes('from=admin')) {
+      navigate('/admin');
+    }
+    // If user is already logged in, redirect to dashboard
+    else if (user) {
+      navigate('/dashboard');
+    }
+  }, [user, isAdmin, navigate, location]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
